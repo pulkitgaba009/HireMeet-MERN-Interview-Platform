@@ -3,6 +3,10 @@ import { ENV } from "../lib/env.js";
 
 async function connectDB (){
     try {
+        if(!ENV.MONGODB_URI){
+            throw new Error("MONGODB_URI is not defined");
+        }
+
         await mongoose.connect(ENV.MONGODB_URI);
         console.log("✅ MONGO DB CONNECTED SUCCESSFULLY !!!");
     } catch (error) {
