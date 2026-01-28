@@ -3,12 +3,25 @@ import path from "path";
 import tryRouter from "./routes/try.js";
 import { ENV } from "./lib/env.js";
 import connectDB from "./config/db.js";
+import cors from "cors";
+import { inngest } from "./config/inngest.js";
+import { serve } from "inngest/express";
+import { functions } from "./config/inngest.js";
 
 const app = express();
 const __dirname = path.resolve();
 
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: ENV.CLIENT_URL || "https://hiremeet-mern-interview-platform.onrender.com",
+    credentials: true,
+  }),
+);
+
 app.use("/api", tryRouter);
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 if (ENV.NODE_ENV === "production") {
   const frontendPath = path.join(__dirname, "..", "frontend", "dist");
@@ -22,7 +35,7 @@ if (ENV.NODE_ENV === "production") {
 
 const startServer = async () => {
   try {
-    connectDB();
+    await connectDB();
     app.listen(ENV.PORT, () => {
       console.log(`App is running at PORT : ${ENV.PORT}`);
     });
