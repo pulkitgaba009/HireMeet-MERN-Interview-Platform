@@ -7,7 +7,7 @@ const getStreamToken = async (req, res) => {
         token,
         userId:req.user.clerkId,
         userName:req.user.name,
-        userImage:req.user.userImage
+        userImage:req.user.profileImage
     })
   } catch (error) {
     res.status(500).json({message:"Internal Server Error"});
