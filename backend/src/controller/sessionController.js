@@ -199,10 +199,6 @@ const endSession = async (req, res) => {
       return res.status(400).json({ message: "Session is already completed" });
     }
 
-    // Update session status
-    session.status = "completed";
-    await session.save();
-
     // Delete Stream Video call
     const call = streamClient.video.call("default", session.callId);
     await call.delete({ hard: true });
@@ -210,6 +206,10 @@ const endSession = async (req, res) => {
     // Delete Stream Chat channel
     const channel = chatClient.channel("messaging", session.callId);
     await channel.delete();
+
+    // Update session status after successful cleanup
+    session.status = "completed";
+    await session.save();
 
     res.status(200).json({ message: "Session Ended Successfully" });
   } catch (error) {
