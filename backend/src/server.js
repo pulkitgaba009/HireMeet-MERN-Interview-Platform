@@ -8,6 +8,7 @@ import { inngest } from "./config/inngest.js";
 import { serve } from "inngest/express";
 import { functions } from "./config/inngest.js";
 import { clerkMiddleware } from '@clerk/express';
+import sessionRoutes from "./routes/sessionRoutes.js";
 
 const app = express();
 const __dirname = path.resolve();
@@ -23,6 +24,7 @@ app.use(clerkMiddleware());
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.use("/api/chat", chatRoutes);
+app.use("/api/sessions",sessionRoutes)
 
 if (ENV.NODE_ENV === "production") {
   const frontendPath = path.join(__dirname, "..", "frontend", "dist");

@@ -1,6 +1,6 @@
 import { Inngest } from "inngest";
 import connectDB from "../config/db.js";
-import User from "../models/User.models.js";
+import User from "../models/UserModels.js";
 import { deleteStreamUser, upsertStreamUser } from "./stream.js";
 
 export const inngest = new Inngest({ id: "hire-meet" });
