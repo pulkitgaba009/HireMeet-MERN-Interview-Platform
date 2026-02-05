@@ -9,6 +9,7 @@ import {
   CheckIcon,
 } from "lucide-react";
 import { SignInButton } from "@clerk/clerk-react";
+import toast, { ToastBar } from "react-hot-toast";
 
 function HomePage() {
   return (
@@ -25,7 +26,9 @@ function HomePage() {
               <p className="text-xl font-black tracking-wide text-primary font-mono">
                 HireMeet
               </p>
-              <p className="text-xs opacity-60 -mt-1">Code Together - Get Hired</p>
+              <p className="text-xs opacity-60 -mt-1">
+                Code Together - Get Hired
+              </p>
             </div>
           </Link>
 
@@ -81,7 +84,14 @@ function HomePage() {
                 </button>
               </SignInButton>
 
-              <button className="btn btn-outline btn-lg gap-2">
+              <button
+                className="btn btn-outline btn-lg gap-2"
+                onClick={() =>
+                  toast("Comming Soon !", {
+                    icon: "🎥",
+                  })
+                }
+              >
                 <VideoIcon className="size-5" />
                 Watch Demo
               </button>
@@ -117,11 +127,11 @@ function HomePage() {
       <section className="max-w-7xl mx-auto px-6 pb-32">
         <div className="text-center mb-20">
           <h2 className="text-4xl font-black">
-            Everything You Need to{" "}
-            <span className="text-primary">Succeed</span>
+            Everything You Need to <span className="text-primary">Succeed</span>
           </h2>
           <p className="text-base-content/60 mt-4 max-w-xl mx-auto">
-            Designed for modern technical interviews and real-world collaboration
+            Designed for modern technical interviews and real-world
+            collaboration
           </p>
         </div>
 
