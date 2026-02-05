@@ -10,7 +10,7 @@ async function connectDB (){
         await mongoose.connect(ENV.MONGODB_URI);
         console.log("✅ MONGO DB CONNECTED SUCCESSFULLY !!!");
     } catch (error) {
-        console.log("❌ NOT ABLE TO CONNECT TO DB !!!");
+        console.log("❌ NOT ABLE TO CONNECT TO DB !!! : ",error);
         process.exit(1);  // 0 success 1 means failiure 
     }
 }
