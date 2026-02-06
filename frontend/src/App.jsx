@@ -19,6 +19,14 @@ function App() {
           path="/problems"
           element={isSignedIn ? <ProblemsPage /> : <Navigate to="/" />}
         />
+        <Route
+          path="/problems"
+          element={isSignedIn ? <ProblemsPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/dashboard"
+          element={isSignedIn ? <ProblemsPage /> : <Navigate to="/" />}
+        />
       </Routes>
       <Toaster />
     </>

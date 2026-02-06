@@ -8,18 +8,20 @@ import {
   UsersIcon,
   CheckIcon,
 } from "lucide-react";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { SignInButton } from "@clerk/clerk-react";
-import toast, { ToastBar } from "react-hot-toast";
+
+import toast from "react-hot-toast";
 
 function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral to-black text-base-content">
+    <div className="min-h-screen bg-linear-to-br from-neutral to-black text-base-content">
       {/* Navbar */}
       <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-primary/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-4 group">
-            <div className="size-11 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg group-hover:scale-105 transition">
+            <div className="size-11 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center shadow-lg group-hover:scale-105 transition">
               <BriefcaseBusiness className="size-6 text-black" />
             </div>
             <div>
@@ -32,12 +34,28 @@ function HomePage() {
             </div>
           </Link>
 
-          <SignInButton mode="modal">
-            <button className="btn btn-primary btn-sm gap-2 shadow-lg font-bold">
-              Get Started
+          <SignedOut>
+            <SignInButton
+              mode="modal"
+              afterSignInUrl="/problems"
+              afterSignUpUrl="/problems"
+            >
+              <button className="btn btn-primary btn-sm gap-2 shadow-lg font-bold">
+                Get Started
+                <ArrowRightIcon className="size-4" />
+              </button>
+            </SignInButton>
+          </SignedOut>
+
+          <SignedIn>
+            <Link
+              to="/problems"
+              className="btn btn-primary btn-sm gap-2 shadow-lg font-bold"
+            >
+              Go to Problems
               <ArrowRightIcon className="size-4" />
-            </button>
-          </SignInButton>
+            </Link>
+          </SignedIn>
         </div>
       </nav>
 
@@ -77,12 +95,17 @@ function HomePage() {
 
             {/* CTA */}
             <div className="flex gap-5">
-              <SignInButton mode="modal">
-                <button className="btn btn-primary btn-lg gap-2 shadow-xl">
-                  Start Coding
-                  <ArrowRightIcon className="size-5" />
-                </button>
-              </SignInButton>
+              <SignedOut>
+                <SignInButton afterSignInUrl="/problems">
+                  <button className="btn btn-primary">Start Coding</button>
+                </SignInButton>
+              </SignedOut>
+
+              <SignedIn>
+                <Link to="/problems" className="btn btn-primary">
+                  Go to Problems
+                </Link>
+              </SignedIn>
 
               <button
                 className="btn btn-outline btn-lg gap-2"
