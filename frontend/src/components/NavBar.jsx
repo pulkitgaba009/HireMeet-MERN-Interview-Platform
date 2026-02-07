@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router";
 import { BriefcaseBusiness, CircleQuestionMarkIcon, LayoutDashboard } from "lucide-react";
 import { UserButton } from "@clerk/clerk-react";
 
