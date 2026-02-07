@@ -27,7 +27,7 @@ function ProblemsPage() {
           {problems.map((problem) => (
             <Link
               key={problem.id}
-              to={`/problem/${problem.id}`}
+              to={`/problems/${problem.id}`}
               className="group block"
             >
               <div className="card bg-base-100 border border-base-300 shadow-sm transition-all duration-200 group-hover:shadow-lg group-hover:border-primary/40 group-hover:scale-[1.01]">

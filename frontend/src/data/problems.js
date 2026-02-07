@@ -98,17 +98,40 @@ int main(){
     },
   },
 
-  "reverse-string": {
-    id: "reverse-string",
-    title: "Reverse String",
-    difficulty: "Easy",
-    category: "String • Two Pointers",
-    description: {
-      text: "Reverse a string in-place.",
-      notes: ["Must use O(1) extra memory."],
+"reverse-string": {
+  id: "reverse-string",
+  title: "Reverse String",
+  difficulty: "Easy",
+  category: "String • Two Pointers",
+
+  description: {
+    text: "Write a function that reverses a string. The input string is given as an array of characters s.",
+    notes: [
+      "You must do this by modifying the input array in-place with O(1) extra memory.",
+      "The order of characters should be reversed."
+    ],
+  },
+
+  examples: [
+    {
+      input: 's = ["h","e","l","l","o"]',
+      output: '["o","l","l","e","h"]',
+      explanation: "The string is reversed in-place."
     },
-    starterCode: {
-      javascript: `function reverseString(s) {
+    {
+      input: 's = ["H","a","n","n","a","h"]',
+      output: '["h","a","n","n","a","H"]',
+    }
+  ],
+
+  constraints: [
+    "1 ≤ s.length ≤ 10⁵",
+    "s[i] is a printable ASCII character"
+  ],
+
+  starterCode: {
+    javascript: `function reverseString(s) {
+  // Write your solution here
 }
 
 let a=["h","e","l","l","o"];
@@ -118,7 +141,8 @@ console.log(a);
 let b=["H","a","n","n","a","h"];
 reverseString(b);
 console.log(b);`,
-      python: `def reverseString(s):
+
+    python: `def reverseString(s):
     pass
 
 a=list("hello")
@@ -128,9 +152,12 @@ print(a)
 b=list("Hannah")
 reverseString(b)
 print(b)`,
-      java: `import java.util.*;
+
+    java: `import java.util.*;
 class Solution {
-  static void reverseString(char[] s){}
+  static void reverseString(char[] s){
+    // Write your solution here
+  }
   public static void main(String[] args){
     char[] a={'h','e','l','l','o'};
     reverseString(a);
@@ -140,11 +167,10 @@ class Solution {
     System.out.println(Arrays.toString(b));
   }
 }`,
-      c: `#include <stdio.h>
+
+    c: `#include <stdio.h>
 void reverse(char*s,int n){
-  for(int l=0,r=n-1;l<r;l++,r--){
-    char t=s[l];s[l]=s[r];s[r]=t;
-  }
+  // Write your solution here
 }
 int main(){
   char a[]="hello";
@@ -154,7 +180,8 @@ int main(){
   reverse(b,6);
   printf("%s",b);
 }`,
-      cpp: `#include <bits/stdc++.h>
+
+    cpp: `#include <bits/stdc++.h>
 using namespace std;
 int main(){
   string a="hello";
@@ -164,84 +191,213 @@ int main(){
   reverse(b.begin(),b.end());
   cout<<b;
 }`,
-    },
-    expectedOutput: {
-      javascript: '["o","l","l","e","h"]\n["h","a","n","n","a","H"]',
-      python: "['o', 'l', 'l', 'e', 'h']\n['h', 'a', 'n', 'n', 'a', 'H']",
-      java: "[o, l, l, e, h]\n[h, a, n, n, a, H]",
-      c: "olleh\nhannaH",
-      cpp: "olleh\nhannaH",
-    },
   },
 
-  "valid-palindrome": {
-    id: "valid-palindrome",
-    title: "Valid Palindrome",
-    difficulty: "Easy",
-    category: "String • Two Pointers",
-    description: {
-      text: "Given a string s, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.",
-      notes: [
-        "Non-alphanumeric characters should be ignored.",
-        "Uppercase and lowercase letters are treated as the same.",
-      ],
+  expectedOutput: {
+    javascript: '["o","l","l","e","h"]\n["h","a","n","n","a","H"]',
+    python: "['o', 'l', 'l', 'e', 'h']\n['h', 'a', 'n', 'n', 'a', 'H']",
+    java: "[o, l, l, e, h]\n[h, a, n, n, a, H]",
+    c: "olleh\nhannaH",
+    cpp: "olleh\nhannaH",
+  },
+},
+
+
+"valid-palindrome": {
+  id: "valid-palindrome",
+  title: "Valid Palindrome",
+  difficulty: "Easy",
+  category: "String • Two Pointers",
+
+  description: {
+    text: "Given a string s, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.",
+    notes: [
+      "Non-alphanumeric characters should be ignored.",
+      "Uppercase and lowercase letters are treated as the same."
+    ],
+  },
+
+  examples: [
+    {
+      input: 's = "A man, a plan, a canal: Panama"',
+      output: "true",
+      explanation: "After removing non-alphanumeric characters and ignoring cases, it reads the same forwards and backwards."
     },
-    starterCode: {
-      javascript: `function isPalindrome(s) {}
+    {
+      input: 's = "race a car"',
+      output: "false",
+    },
+    {
+      input: 's = " "',
+      output: "true",
+    }
+  ],
+
+  constraints: [
+    "1 ≤ s.length ≤ 2 × 10⁵",
+    "s consists only of printable ASCII characters"
+  ],
+
+  starterCode: {
+    javascript: `function isPalindrome(s) {
+  // Write your solution here
+}
+
 console.log(isPalindrome("A man, a plan, a canal: Panama"));
 console.log(isPalindrome("race a car"));
 console.log(isPalindrome(" "));`,
-      python: `def isPalindrome(s): pass
+
+    python: `def isPalindrome(s):
+    pass
+
 print(isPalindrome("A man, a plan, a canal: Panama"))
 print(isPalindrome("race a car"))
 print(isPalindrome(" "))`,
-      java: `class Solution {
-  static boolean isPalindrome(String s){ return false; }
+
+    java: `class Solution {
+  static boolean isPalindrome(String s){
+    // Write your solution here
+    return false;
+  }
   public static void main(String[] args){
     System.out.println(isPalindrome("A man, a plan, a canal: Panama"));
     System.out.println(isPalindrome("race a car"));
     System.out.println(isPalindrome(" "));
   }
 }`,
-      c: `#include <stdio.h>
+
+    c: `#include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 int isPal(char*s){
-  int l=0,r=strlen(s)-1;
-  while(l<r){
-    while(l<r&&!isalnum(s[l]))l++;
-    while(l<r&&!isalnum(s[r]))r--;
-    if(tolower(s[l])!=tolower(s[r]))return 0;
-    l++;r--;
-  }
-  return 1;
+  // Write your solution here
+  return 0;
 }
 int main(){
   printf("%s\n",isPal("A man, a plan, a canal: Panama")?"true":"false");
   printf("%s\n",isPal("race a car")?"true":"false");
   printf("%s",isPal(" ")?"true":"false");
 }`,
-      cpp: `#include <bits/stdc++.h>
+
+    cpp: `#include <bits/stdc++.h>
 using namespace std;
 int main(){
-  auto f=[&](string s){
-    string t;
-    for(char c:s) if(isalnum(c)) t+=tolower(c);
-    return t==string(t.rbegin(),t.rend());
+  auto isPal=[&](string s){
+    // Write your solution here
+    return false;
   };
-  cout<<(f("A man, a plan, a canal: Panama")?"true":"false")<<endl;
-  cout<<(f("race a car")?"true":"false")<<endl;
-  cout<<(f(" ")?"true":"false");
+  cout<<(isPal("A man, a plan, a canal: Panama")?"true":"false")<<endl;
+  cout<<(isPal("race a car")?"true":"false")<<endl;
+  cout<<(isPal(" ")?"true":"false");
 }`,
-    },
-    expectedOutput: {
-      javascript: "true\nfalse\ntrue",
-      python: "True\nFalse\nTrue",
-      java: "true\nfalse\ntrue",
-      c: "true\nfalse\ntrue",
-      cpp: "true\nfalse\ntrue",
-    },
   },
+
+  expectedOutput: {
+    javascript: "true\nfalse\ntrue",
+    python: "True\nFalse\nTrue",
+    java: "true\nfalse\ntrue",
+    c: "true\nfalse\ntrue",
+    cpp: "true\nfalse\ntrue",
+  },
+},
+ "valid-palindrome": {
+  id: "valid-palindrome",
+  title: "Valid Palindrome",
+  difficulty: "Easy",
+  category: "String • Two Pointers",
+
+  description: {
+    text: "Given a string s, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.",
+    notes: [
+      "Non-alphanumeric characters should be ignored.",
+      "Uppercase and lowercase letters are treated as the same."
+    ],
+  },
+
+  examples: [
+    {
+      input: 's = "A man, a plan, a canal: Panama"',
+      output: "true",
+      explanation: "After removing non-alphanumeric characters and ignoring cases, it reads the same forwards and backwards."
+    },
+    {
+      input: 's = "race a car"',
+      output: "false",
+    },
+    {
+      input: 's = " "',
+      output: "true",
+    }
+  ],
+
+  constraints: [
+    "1 ≤ s.length ≤ 2 × 10⁵",
+    "s consists only of printable ASCII characters"
+  ],
+
+  starterCode: {
+    javascript: `function isPalindrome(s) {
+  // Write your solution here
+}
+
+console.log(isPalindrome("A man, a plan, a canal: Panama"));
+console.log(isPalindrome("race a car"));
+console.log(isPalindrome(" "));`,
+
+    python: `def isPalindrome(s):
+    pass
+
+print(isPalindrome("A man, a plan, a canal: Panama"))
+print(isPalindrome("race a car"))
+print(isPalindrome(" "))`,
+
+    java: `class Solution {
+  static boolean isPalindrome(String s){
+    // Write your solution here
+    return false;
+  }
+  public static void main(String[] args){
+    System.out.println(isPalindrome("A man, a plan, a canal: Panama"));
+    System.out.println(isPalindrome("race a car"));
+    System.out.println(isPalindrome(" "));
+  }
+}`,
+
+    c: `#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+int isPal(char*s){
+  // Write your solution here
+  return 0;
+}
+int main(){
+  printf("%s\n",isPal("A man, a plan, a canal: Panama")?"true":"false");
+  printf("%s\n",isPal("race a car")?"true":"false");
+  printf("%s",isPal(" ")?"true":"false");
+}`,
+
+    cpp: `#include <bits/stdc++.h>
+using namespace std;
+int main(){
+  auto isPal=[&](string s){
+    // Write your solution here
+    return false;
+  };
+  cout<<(isPal("A man, a plan, a canal: Panama")?"true":"false")<<endl;
+  cout<<(isPal("race a car")?"true":"false")<<endl;
+  cout<<(isPal(" ")?"true":"false");
+}`,
+  },
+
+  expectedOutput: {
+    javascript: "true\nfalse\ntrue",
+    python: "True\nFalse\nTrue",
+    java: "true\nfalse\ntrue",
+    c: "true\nfalse\ntrue",
+    cpp: "true\nfalse\ntrue",
+  },
+},
+
 
   // MEDIUM 1
   "longest-substring-without-repeating-characters": {
@@ -416,5 +572,33 @@ int main(){
       c: "2.0\n2.5",
       cpp: "2.0\n2.5",
     },
+  },
+};
+
+export const LANGUAGE_CONFIG = {
+  javascript: {
+    name: "JavaScript",
+    icon: "/javascript.png",
+    monacoLang: "javascript",
+  },
+  python: {
+    name: "Python",
+    icon: "/python.png",
+    monacoLang: "python",
+  },
+  java: {
+    name: "Java",
+    icon: "/java.png",
+    monacoLang: "java",
+  },
+  c: {
+    name: "C",
+    icon: "/c.png",
+    monacoLang: "c",
+  },
+  cpp: {
+    name: "C++",
+    icon: "/cpp.png",
+    monacoLang: "cpp",
   },
 };
