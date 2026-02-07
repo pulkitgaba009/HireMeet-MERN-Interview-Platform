@@ -1,6 +1,6 @@
 import { PROBLEMS } from "../data/problems";
 import NavBar from "../components/NavBar";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { Code2Icon } from "lucide-react";
 import { getDifficulyBadgeClass } from "../lib/utils";
 
