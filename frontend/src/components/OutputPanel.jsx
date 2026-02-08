@@ -1,3 +1,10 @@
+/**
+ * Render a panel that displays execution output with states for running and empty output.
+ *
+ * @param {string|null|undefined} output - Content to display when available; rendered inside a monospace `<pre>`.
+ * @param {boolean} isRunning - Whether code execution is in progress; when true shows a "Running..." hint.
+ * @returns {JSX.Element} The output panel UI.
+ */
 function OutputPanel({ output, isRunning }) {
   return (
     <div className="h-full bg-base-100 flex flex-col">

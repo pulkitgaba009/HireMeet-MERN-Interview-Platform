@@ -10,6 +10,16 @@ import { executeCode } from "../lib/piston";
 import toast from "react-hot-toast";
 import confetti from "canvas-confetti";
 
+/**
+ * Render the problem-solving page with a navigable problem list, language-aware code editor, and output pane.
+ *
+ * Displays the selected problem's description, provides a code editor seeded with language-specific starter code,
+ * lets the user run code, shows execution output, and verifies output against the problem's expected output
+ * (triggering confetti and success toast on pass, or an error toast on failure). Also handles changing the
+ * current problem and switching programming languages.
+ *
+ * @returns {JSX.Element} The rendered ProblemPage component.
+ */
 function ProblemPage() {
   const { id } = useParams();
   const navigate = useNavigate();

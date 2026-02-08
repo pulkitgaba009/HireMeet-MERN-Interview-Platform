@@ -13,6 +13,13 @@ import { SignInButton } from "@clerk/clerk-react";
 
 import toast from "react-hot-toast";
 
+/**
+ * Render the application's landing (home) page including the navbar, hero section, feature cards, and authentication-aware call-to-actions.
+ *
+ * Includes sign-in/sign-out gated buttons that navigate to the problems page, a hero with CTA buttons and stats, a features grid, and a "Watch Demo" action that triggers a toast.
+ *
+ * @returns {JSX.Element} The React element for the home/landing page.
+ */
 function HomePage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-neutral to-black text-base-content">
