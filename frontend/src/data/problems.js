@@ -203,103 +203,7 @@ int main(){
 },
 
 
-"valid-palindrome": {
-  id: "valid-palindrome",
-  title: "Valid Palindrome",
-  difficulty: "Easy",
-  category: "String • Two Pointers",
 
-  description: {
-    text: "Given a string s, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.",
-    notes: [
-      "Non-alphanumeric characters should be ignored.",
-      "Uppercase and lowercase letters are treated as the same."
-    ],
-  },
-
-  examples: [
-    {
-      input: 's = "A man, a plan, a canal: Panama"',
-      output: "true",
-      explanation: "After removing non-alphanumeric characters and ignoring cases, it reads the same forwards and backwards."
-    },
-    {
-      input: 's = "race a car"',
-      output: "false",
-    },
-    {
-      input: 's = " "',
-      output: "true",
-    }
-  ],
-
-  constraints: [
-    "1 ≤ s.length ≤ 2 × 10⁵",
-    "s consists only of printable ASCII characters"
-  ],
-
-  starterCode: {
-    javascript: `function isPalindrome(s) {
-  // Write your solution here
-}
-
-console.log(isPalindrome("A man, a plan, a canal: Panama"));
-console.log(isPalindrome("race a car"));
-console.log(isPalindrome(" "));`,
-
-    python: `def isPalindrome(s):
-    pass
-
-print(isPalindrome("A man, a plan, a canal: Panama"))
-print(isPalindrome("race a car"))
-print(isPalindrome(" "))`,
-
-    java: `class Solution {
-  static boolean isPalindrome(String s){
-    // Write your solution here
-    return false;
-  }
-  public static void main(String[] args){
-    System.out.println(isPalindrome("A man, a plan, a canal: Panama"));
-    System.out.println(isPalindrome("race a car"));
-    System.out.println(isPalindrome(" "));
-  }
-}`,
-
-    c: `#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-int isPal(char*s){
-  // Write your solution here
-  return 0;
-}
-int main(){
-  printf("%s\n",isPal("A man, a plan, a canal: Panama")?"true":"false");
-  printf("%s\n",isPal("race a car")?"true":"false");
-  printf("%s",isPal(" ")?"true":"false");
-}`,
-
-    cpp: `#include <bits/stdc++.h>
-using namespace std;
-int main(){
-  auto isPal=[&](string s){
-    // Write your solution here
-    return false;
-  };
-  cout<<(isPal("A man, a plan, a canal: Panama")?"true":"false")<<endl;
-  cout<<(isPal("race a car")?"true":"false")<<endl;
-  cout<<(isPal(" ")?"true":"false");
-}`,
-  },
-
-  expectedOutput: {
-    javascript: "true\nfalse\ntrue",
-    python: "True\nFalse\nTrue",
-    java: "true\nfalse\ntrue",
-    c: "true\nfalse\ntrue",
-    cpp: "true\nfalse\ntrue",
-  },
-},
  "valid-palindrome": {
   id: "valid-palindrome",
   title: "Valid Palindrome",
@@ -598,7 +502,7 @@ export const LANGUAGE_CONFIG = {
   },
   cpp: {
     name: "C++",
-    icon: "/cpp.png",
+    icon: "/Cpp.png",
     monacoLang: "cpp",
   },
 };
