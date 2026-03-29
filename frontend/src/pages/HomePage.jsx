@@ -26,7 +26,7 @@ function HomePage() {
             </div>
             <div>
               <p className="text-xl font-black tracking-wide text-primary font-mono">
-                HireMeet
+                Infosys
               </p>
               <p className="text-xs opacity-60 -mt-1">
                 Code Together - Get Hired
@@ -61,93 +61,95 @@ function HomePage() {
 
       {/* Hero */}
       <section className="max-w-7xl mx-auto px-6 py-20 lg:py-28">
-  <div className="grid lg:grid-cols-2 gap-14 items-center">
-    {/* Left */}
-    <div className="space-y-8 text-center lg:text-left">
-      <div className="badge badge-primary badge-outline gap-2 px-4 py-3 mx-auto lg:mx-0">
-        <ZapIcon className="size-4" />
-        Real-time Collaboration
-      </div>
+        <div className="grid lg:grid-cols-2 gap-14 items-center">
+          {/* Left */}
+          <div className="space-y-8 text-center lg:text-left">
+            <div className="badge badge-primary badge-outline gap-2 px-4 py-3 mx-auto lg:mx-0">
+              <ZapIcon className="size-4" />
+              Real-time Collaboration
+            </div>
 
-      <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight">
-        <span className="text-primary">Code Together,</span>
-        <br />
-        <span className="text-base-content/90">Learn Together</span>
-      </h1>
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight">
+              <span className="text-primary">Code Together,</span>
+              <br />
+              <span className="text-base-content/90">Learn Together</span>
+            </h1>
 
-      <p className="text-base sm:text-lg text-base-content/70 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-        A premium platform for collaborative coding interviews and pair
-        programming with real-time video and shared editors.
-      </p>
+            <p className="text-base sm:text-lg text-base-content/70 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              A premium platform for collaborative coding interviews and pair
+              programming with real-time video and shared editors.
+            </p>
 
-      {/* Feature Pills */}
-      <div className="flex flex-wrap justify-center lg:justify-start gap-3">
-        {["Live Video", "Code Editor", "Multi-Language"].map((text) => (
-          <span
-            key={text}
-            className="badge badge-outline badge-md sm:badge-lg gap-2 px-4 py-2"
-          >
-            <CheckIcon className="size-4 text-primary" />
-            {text}
-          </span>
-        ))}
-      </div>
+            {/* Feature Pills */}
+            <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+              {["Live Video", "Code Editor", "Multi-Language"].map((text) => (
+                <span
+                  key={text}
+                  className="badge badge-outline badge-md sm:badge-lg gap-2 px-4 py-2"
+                >
+                  <CheckIcon className="size-4 text-primary" />
+                  {text}
+                </span>
+              ))}
+            </div>
 
-      {/* CTA */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-        <SignedOut>
-          <SignInButton afterSignInUrl="/problems">
-            <button className="btn btn-primary w-full sm:w-auto">
-              Start Coding
-            </button>
-          </SignInButton>
-        </SignedOut>
+            {/* CTA */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <SignedOut>
+                <SignInButton afterSignInUrl="/problems">
+                  <button className="btn btn-primary w-full sm:w-auto">
+                    Start Coding
+                  </button>
+                </SignInButton>
+              </SignedOut>
 
-        <SignedIn>
-          <Link to="/problems" className="btn btn-primary w-full sm:w-auto">
-            Go to Problems
-          </Link>
-        </SignedIn>
+              <SignedIn>
+                <Link
+                  to="/problems"
+                  className="btn btn-primary w-full sm:w-auto"
+                >
+                  Go to Problems
+                </Link>
+              </SignedIn>
 
-        <button
-          className="btn btn-outline w-full sm:w-auto gap-2"
-          onClick={() =>
-            toast("Coming Soon!", {
-              icon: "🎥",
-            })
-          }
-        >
-          <VideoIcon className="size-5" />
-          Watch Demo
-        </button>
-      </div>
+              <button
+                className="btn btn-outline w-full sm:w-auto gap-2"
+                onClick={() =>
+                  toast("Coming Soon!", {
+                    icon: "🎥",
+                  })
+                }
+              >
+                <VideoIcon className="size-5" />
+                Watch Demo
+              </button>
+            </div>
 
-      {/* Stats */}
-      <div className="stats stats-vertical sm:stats-horizontal bg-black/60 border border-primary/10 shadow-xl mx-auto lg:mx-0">
-        <div className="stat">
-          <div className="stat-value text-primary">10K+</div>
-          <div className="stat-title opacity-70">Users</div>
+            {/* Stats */}
+            <div className="stats stats-vertical sm:stats-horizontal bg-black/60 border border-primary/10 shadow-xl mx-auto lg:mx-0">
+              <div className="stat">
+                <div className="stat-value text-primary">10K+</div>
+                <div className="stat-title opacity-70">Users</div>
+              </div>
+              <div className="stat">
+                <div className="stat-value text-primary">50K+</div>
+                <div className="stat-title opacity-70">Sessions</div>
+              </div>
+              <div className="stat">
+                <div className="stat-value text-primary">99.9%</div>
+                <div className="stat-title opacity-70">Uptime</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right */}
+          <img
+            src="/hero.png"
+            alt="Platform Preview"
+            className="rounded-3xl border border-primary/20 shadow-2xl shadow-primary/10 hover:scale-[1.02] transition duration-500 w-full max-w-md mx-auto lg:max-w-full"
+          />
         </div>
-        <div className="stat">
-          <div className="stat-value text-primary">50K+</div>
-          <div className="stat-title opacity-70">Sessions</div>
-        </div>
-        <div className="stat">
-          <div className="stat-value text-primary">99.9%</div>
-          <div className="stat-title opacity-70">Uptime</div>
-        </div>
-      </div>
-    </div>
-
-    {/* Right */}
-    <img
-      src="/hero.png"
-      alt="Platform Preview"
-      className="rounded-3xl border border-primary/20 shadow-2xl shadow-primary/10 hover:scale-[1.02] transition duration-500 w-full max-w-md mx-auto lg:max-w-full"
-    />
-  </div>
-</section>
-
+      </section>
 
       {/* Features */}
       <section className="max-w-7xl mx-auto px-6 pb-32">

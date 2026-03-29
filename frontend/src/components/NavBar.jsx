@@ -14,7 +14,7 @@ function NavBar() {
 
           <div>
             <p className="text-xl font-black tracking-wide text-primary font-mono">
-              HireMeet
+              Infosys
             </p>
             <p className="text-xs opacity-60 -mt-1">
               Code Together · Get Hired
