@@ -24,7 +24,25 @@ app.use(clerkMiddleware());
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.use("/api/chat", chatRoutes);
-app.use("/api/sessions",sessionRoutes)
+app.use("/api/sessions",sessionRoutes);
+
+app.post("/api/execute", async (req, res) => {
+  try {
+    const response = await fetch("http://localhost:2000/api/v2/execute", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(req.body),
+    });
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Execution error:", error);
+    res.status(500).json({ error: "Execution failed" });
+  }
+});
 
 if (ENV.NODE_ENV === "production") {
   const frontendPath = path.join(__dirname, "..", "frontend", "dist");

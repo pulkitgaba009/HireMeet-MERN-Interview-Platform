@@ -4,7 +4,9 @@ import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ProblemsPage from "./pages/ProblemsPage";
 import ProblemPage from "./pages/ProblemPage";
+import AdminAuth from "./pages/AdminAuth";
 import { Toaster } from "react-hot-toast";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const { isLoaded, isSignedIn } = useUser();
@@ -27,10 +29,12 @@ function App() {
           element={isSignedIn ? <ProblemPage /> : <Navigate to="/" />}
         />
 
-        <Route
+         <Route
           path="/dashboard"
-          element={isSignedIn ? <ProblemsPage /> : <Navigate to="/" />}
+          element={isSignedIn?<Dashboard />:<Navigate to="/" />} 
         />
+
+        <Route path="/admin" element={<AdminAuth/>}></Route>
       </Routes>
 
       <Toaster />

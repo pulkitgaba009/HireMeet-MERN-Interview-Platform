@@ -1,4 +1,4 @@
-const PISTON_API = "/piston/api/v2/piston";
+const PISTON_API = "http://localhost:3000/api";
 
 const LANGUAGE_VERSIONS = {
   javascript: { language: "javascript", version: "18.15.0" },
