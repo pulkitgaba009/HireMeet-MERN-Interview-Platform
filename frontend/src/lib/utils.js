@@ -10,3 +10,5 @@ export const getDifficulyBadgeClass= (difficulty)=>{
             return "badge-soft badge-ghost";
     } 
 }
+
+export const getDifficultyBadgeClass = getDifficulyBadgeClass;
