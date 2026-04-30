@@ -56,6 +56,14 @@ export const sessionApi = {
     return data;
   },
 
+  deleteSession: async (id, token) => {
+    const { data } = await axiosInstance.delete(
+      `/sessions/${id}`,
+      withAuthHeaders(token),
+    );
+    return data;
+  },
+
   getStreamToken: async (sessionId, token) => {
     const { data } = await axiosInstance.post(
       "/sessions/stream-token",

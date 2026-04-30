@@ -1,8 +1,13 @@
-import { Code2, Clock, Users, Trophy, Loader } from "lucide-react";
+import { Code2, Clock, Users, Trophy, Loader, Trash2 } from "lucide-react";
 import { getDifficultyBadgeClass } from "../lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
-function RecentSessions({ sessions, isLoading }) {
+function RecentSessions({
+  sessions,
+  isLoading,
+  onDeleteSession,
+  deletingSessionId,
+}) {
   return (
     <div className="card bg-neutral/70 backdrop-blur border-2 border-accent/20 hover:border-accent/40 mt-8 shadow-xl hover:shadow-accent/20 transition-all duration-300">
       <div className="card-body">
@@ -19,25 +24,43 @@ function RecentSessions({ sessions, isLoading }) {
               <Loader className="w-10 h-10 animate-spin text-primary" />
             </div>
           ) : sessions.length > 0 ? (
-            sessions.map((session) => (
-              <div
-                key={session._id}
-                className={`card relative transition-all duration-300 ${
-                  session.status === "active"
-                    ? "bg-success/10 border-success/30 hover:border-success/60 hover:shadow-lg hover:shadow-success/10"
-                    : "bg-base-200/60 border-base-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
-                }`}
-              >
-                {session.status === "active" && (
-                  <div className="absolute top-3 right-3">
-                    <div className="badge badge-success gap-1">
-                      <div className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
-                      ACTIVE
-                    </div>
-                  </div>
-                )}
+            sessions.map((session) => {
+              const isDeleting = deletingSessionId === session._id;
 
-                <div className="card-body p-5">
+              return (
+                <div
+                  key={session._id}
+                  className={`card relative transition-all duration-300 ${
+                    session.status === "active"
+                      ? "bg-success/10 border-success/30 hover:border-success/60 hover:shadow-lg hover:shadow-success/10"
+                      : "bg-base-200/60 border-base-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10"
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => onDeleteSession?.(session._id)}
+                    className="btn btn-ghost btn-error btn-sm btn-square absolute right-3 top-3 z-10"
+                    disabled={isDeleting}
+                    title="Delete from past sessions"
+                    aria-label="Delete from past sessions"
+                  >
+                    {isDeleting ? (
+                      <Loader className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                  </button>
+
+                  {session.status === "active" && (
+                    <div className="absolute top-3 left-3">
+                      <div className="badge badge-success gap-1">
+                        <div className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
+                        ACTIVE
+                      </div>
+                    </div>
+                  )}
+
+                <div className="card-body p-5 pr-12">
                   <div className="flex items-start gap-3 mb-4">
                     <div
                       className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
@@ -84,7 +107,8 @@ function RecentSessions({ sessions, isLoading }) {
                   </div>
                 </div>
               </div>
-            ))
+              );
+            })
           ) : (
             <div className="col-span-full text-center py-16">
               <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-accent/20 to-secondary/20 rounded-3xl flex items-center justify-center">

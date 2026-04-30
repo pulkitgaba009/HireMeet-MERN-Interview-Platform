@@ -34,7 +34,14 @@ const sessionSchema = new mongoose.Schema({
   callId: {
     type: String,
     default: null,
-  }
+  },
+
+  deletedFor: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 
 },{timestamps:true});
 

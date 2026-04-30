@@ -6,11 +6,19 @@ import {
   UsersIcon,
   ZapIcon,
   LoaderIcon,
+  CircleStopIcon,
 } from "lucide-react";
 import { Link } from "react-router";
 import { getDifficultyBadgeClass } from "../lib/utils";
 
-function ActiveSessions({ sessions, isLoading, isUserInSession }) {
+function ActiveSessions({
+  sessions,
+  isLoading,
+  isUserInSession,
+  currentUserId,
+  onEndSession,
+  endingSessionId,
+}) {
   return (
     <div className="lg:col-span-2 card bg-neutral/70 backdrop-blur border-2 border-primary/20 hover:border-primary/40 shadow-xl hover:shadow-primary/20 h-full transition-all duration-300">
       <div className="card-body">
@@ -37,14 +45,18 @@ function ActiveSessions({ sessions, isLoading, isUserInSession }) {
               <LoaderIcon className="size-10 animate-spin text-primary" />
             </div>
           ) : sessions.length > 0 ? (
-            sessions.map((session) => (
-              <div
-                key={session._id}
-                className="card bg-base-200/60 border-2 border-base-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
-              >
-                <div className="flex items-center justify-between gap-4 p-5">
+            sessions.map((session) => {
+              const isHost = session.host?.clerkId === currentUserId;
+              const isEnding = endingSessionId === session._id;
+
+              return (
+                <div
+                  key={session._id}
+                  className="card bg-base-200/60 border-2 border-base-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
+                >
+                  <div className="flex items-center justify-between gap-4 p-5">
                   {/* LEFT SIDE */}
-                  <div className="flex items-center gap-4 flex-1">
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
                     <div className="relative size-14 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
                       <Code2Icon className="size-7 text-white" />
                       <div className="absolute -top-1 -right-1 size-4 bg-success rounded-full border-2 border-base-100" />
@@ -81,20 +93,40 @@ function ActiveSessions({ sessions, isLoading, isUserInSession }) {
                     </div>
                   </div>
 
-                  {session.participant && !isUserInSession(session) ? (
-                    <button className="btn btn-disabled btn-sm">Full</button>
-                  ) : (
-                    <Link
-                      to={`/session/${session._id}`}
-                      className="btn btn-primary btn-sm gap-2 shadow-md shadow-primary/20"
-                    >
-                      {isUserInSession(session) ? "Rejoin" : "Join"}
-                      <ArrowRightIcon className="size-4" />
-                    </Link>
-                  )}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {isHost && (
+                      <button
+                        type="button"
+                        onClick={() => onEndSession?.(session._id)}
+                        className="btn btn-error btn-sm btn-square"
+                        disabled={isEnding}
+                        title="End session"
+                        aria-label="End session"
+                      >
+                        {isEnding ? (
+                          <LoaderIcon className="size-4 animate-spin" />
+                        ) : (
+                          <CircleStopIcon className="size-4" />
+                        )}
+                      </button>
+                    )}
+
+                    {session.participant && !isUserInSession(session) ? (
+                      <button className="btn btn-disabled btn-sm">Full</button>
+                    ) : (
+                      <Link
+                        to={`/session/${session._id}`}
+                        className="btn btn-primary btn-sm gap-2 shadow-md shadow-primary/20"
+                      >
+                        {isUserInSession(session) ? "Rejoin" : "Join"}
+                        <ArrowRightIcon className="size-4" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
-            ))
+              );
+            })
           ) : (
             <div className="text-center py-16">
               <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-3xl flex items-center justify-center">

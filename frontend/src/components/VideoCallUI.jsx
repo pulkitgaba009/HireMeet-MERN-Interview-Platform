@@ -8,7 +8,14 @@ import {
 import { Loader2Icon, MessageSquareIcon, UsersIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Channel, Chat, MessageList, Thread, Window } from "stream-chat-react";
+import {
+  Channel,
+  Chat,
+  MessageComposer,
+  MessageList,
+  Thread,
+  Window,
+} from "stream-chat-react";
 
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import "stream-chat-react/dist/css/index.css";
@@ -99,7 +106,11 @@ function VideoCallUI({ chatClient, channel }) {
               <div className="flex-1 overflow-hidden stream-chat-dark">
                 <Chat client={chatClient} theme="str-chat__theme-dark">
                   <Channel channel={channel}>
-                    <Window />
+                    <Window>
+                      <MessageList />
+                      <MessageComposer focus />
+                    </Window>
+                    <Thread />
                   </Channel>
                 </Chat>
               </div>

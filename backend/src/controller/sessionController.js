@@ -15,6 +15,36 @@ const ensureStreamUser = async (user) => {
   });
 };
 
+const ensureSessionChatChannel = async (session, user) => {
+  const channel = chatClient.channel("messaging", session.callId, {
+    name: `${session.problem} Session`,
+    created_by_id: user.clerkId,
+    members: [user.clerkId],
+  });
+
+  const state = await channel.create({
+    messages: { limit: 30 },
+    members: { limit: 30 },
+    presence: false,
+    state: true,
+    watch: false,
+  });
+
+  const isMember = state.members?.some(
+    (member) => member.user_id === user.clerkId || member.user?.id === user.clerkId,
+  );
+
+  if (!isMember) {
+    await channel.addMembers([user.clerkId]);
+  }
+
+  return channel;
+};
+
+const isSessionMember = (session, userId) =>
+  session.host?.toString() === userId.toString() ||
+  session.participant?.toString() === userId.toString();
+
 /**
  * CREATE A NEW SESSION
  * - Creates DB session
@@ -65,14 +95,7 @@ const createSession = async (req, res) => {
       },
     });
 
-    // Create Stream Chat channel for session
-    const channel = chatClient.channel("messaging", callId, {
-      name: `${problem} Session`,
-      created_by_id: clerkId,
-      members: [clerkId],
-    });
-
-    await channel.create();
+    await ensureSessionChatChannel(session, req.user);
 
     // Send response
     res.status(201).json({ session });
@@ -109,6 +132,7 @@ const getMyRecentSessions = async (req, res) => {
     const userId = req.user._id;
 
     const sessions = await Session.find({
+      deletedFor: { $ne: userId },
       status: "completed", // ✅ fixed typo
       $or: [{ host: userId }, { participant: userId }], // ✅ fixed typo syntax
     })
@@ -152,7 +176,6 @@ const joinSession = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
-    const clerkId = req.user.clerkId;
 
     const session = await Session.findById(id);
 
@@ -177,9 +200,7 @@ const joinSession = async (req, res) => {
     session.participant = userId;
     await session.save();
 
-    // Add participant to Stream Chat channel
-    const channel = chatClient.channel("messaging", session.callId);
-    await channel.addMembers([clerkId]);
+    await ensureSessionChatChannel(session, req.user);
 
     res.status(200).json({ message: "Joined session successfully" });
   } catch (error) {
@@ -217,13 +238,20 @@ const endSession = async (req, res) => {
       return res.status(400).json({ message: "Session is already completed" });
     }
 
-    // Delete Stream Video call
-    const call = streamClient.video.call("default", session.callId);
-    await call.delete({ hard: true });
+    // Best-effort cleanup; the DB status should still move to past sessions.
+    try {
+      const call = streamClient.video.call("default", session.callId);
+      await call.delete({ hard: true });
+    } catch (streamError) {
+      console.warn("Stream call cleanup failed:", streamError.message);
+    }
 
-    // Delete Stream Chat channel
-    const channel = chatClient.channel("messaging", session.callId);
-    await channel.delete();
+    try {
+      const channel = chatClient.channel("messaging", session.callId);
+      await channel.delete();
+    } catch (chatError) {
+      console.warn("Stream chat cleanup failed:", chatError.message);
+    }
 
     // Update session status after successful cleanup
     session.status = "completed";
@@ -232,6 +260,59 @@ const endSession = async (req, res) => {
     res.status(200).json({ message: "Session Ended Successfully" });
   } catch (error) {
     console.log("Error in endSession controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const deleteSession = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    const session = await Session.findById(id);
+
+    if (!session) {
+      return res.status(404).json({ message: "Session Not Found" });
+    }
+
+    if (!isSessionMember(session, userId)) {
+      return res
+        .status(403)
+        .json({ message: "You can only delete sessions you joined" });
+    }
+
+    if (session.status !== "completed") {
+      return res
+        .status(400)
+        .json({ message: "End the session before deleting it from history" });
+    }
+
+    const currentUserId = userId.toString();
+    const deletedForIds = (session.deletedFor || []).map((deletedUserId) =>
+      deletedUserId.toString(),
+    );
+
+    if (!deletedForIds.includes(currentUserId)) {
+      session.deletedFor.push(userId);
+      deletedForIds.push(currentUserId);
+    }
+
+    const sessionMemberIds = [session.host, session.participant]
+      .filter(Boolean)
+      .map((memberId) => memberId.toString());
+    const isDeletedForEveryMember = sessionMemberIds.every((memberId) =>
+      deletedForIds.includes(memberId),
+    );
+
+    if (isDeletedForEveryMember) {
+      await Session.findByIdAndDelete(id);
+    } else {
+      await session.save();
+    }
+
+    res.status(200).json({ message: "Session removed from your past sessions" });
+  } catch (error) {
+    console.log("Error in deleteSession controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -266,11 +347,22 @@ const getStreamToken = async (req, res) => {
       return res.status(404).json({ message: "Session not found" });
     }
 
+    const isMemberOfSession =
+      session.host?.toString() === req.user._id.toString() ||
+      session.participant?.toString() === req.user._id.toString();
+
+    if (!isMemberOfSession) {
+      return res
+        .status(403)
+        .json({ message: "Join this session before requesting chat/video tokens" });
+    }
+
     const clerkId = req.user.clerkId;
     const callId = session.callId;
     console.log("Generating tokens for clerkId:", clerkId, "callId:", callId);
 
     await ensureStreamUser(req.user);
+    await ensureSessionChatChannel(session, req.user);
 
     // Generate Stream Chat token (same as chatController)
     let streamToken;
@@ -313,5 +405,6 @@ export {
   getSessionById,
   joinSession,
   endSession,
+  deleteSession,
   getStreamToken,
 };

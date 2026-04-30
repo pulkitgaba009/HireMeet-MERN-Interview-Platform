@@ -104,16 +104,39 @@ export const useEndSession = (id) => {
 
   return useMutation({
     mutationKey: ["end-session", id],
-    mutationFn: async () => {
+    mutationFn: async (sessionId = id) => {
+      if (!sessionId) throw new Error("Missing session id");
       const token = await resolveToken(getToken);
-      return sessionApi.endSession(id, token);
+      return sessionApi.endSession(sessionId, token);
     },
     onSuccess: () => {
       toast.success("Successfully ended the session!");
       queryClient.invalidateQueries({ queryKey: ["active-sessions"] });
+      queryClient.invalidateQueries({ queryKey: ["my-recent-sessions"] });
       queryClient.invalidateQueries({ queryKey: ["session", id] });
     },
     onError: (error) =>
       toast.error(error.response?.data?.message || "Failed to end session"),
+  });
+};
+
+// DELETE SESSION FROM PAST SESSIONS
+export const useDeleteSession = () => {
+  const queryClient = useQueryClient();
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationKey: ["delete-session"],
+    mutationFn: async (id) => {
+      const token = await resolveToken(getToken);
+      return sessionApi.deleteSession(id, token);
+    },
+    onSuccess: () => {
+      toast.success("Session removed from past sessions");
+      queryClient.invalidateQueries({ queryKey: ["my-recent-sessions"] });
+      queryClient.invalidateQueries({ queryKey: ["active-sessions"] });
+    },
+    onError: (error) =>
+      toast.error(error.response?.data?.message || "Failed to delete session"),
   });
 };

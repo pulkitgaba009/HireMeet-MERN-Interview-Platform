@@ -4,6 +4,8 @@ import { useState } from "react";
 import {
   useActiveSessions,
   useCreateSession,
+  useDeleteSession,
+  useEndSession,
   useMyRecentSessions,
 } from "../hooks/useSessions";
 
@@ -24,6 +26,8 @@ function DashboardPage() {
   });
 
   const createSessionMutation = useCreateSession();
+  const endSessionMutation = useEndSession();
+  const deleteSessionMutation = useDeleteSession();
 
   const { data: activeSessionsData, isLoading: loadingActiveSessions } =
     useActiveSessions();
@@ -58,6 +62,24 @@ function DashboardPage() {
       session.host?.clerkId === user.id ||
       session.participant?.clerkId === user.id
     );
+  };
+
+  const handleEndSession = (sessionId) => {
+    const confirmed = window.confirm(
+      "End this session and move it to past sessions?",
+    );
+    if (!confirmed) return;
+
+    endSessionMutation.mutate(sessionId);
+  };
+
+  const handleDeleteSession = (sessionId) => {
+    const confirmed = window.confirm(
+      "Delete this session from your past sessions?",
+    );
+    if (!confirmed) return;
+
+    deleteSessionMutation.mutate(sessionId);
   };
 
   return (
@@ -110,6 +132,9 @@ function DashboardPage() {
                   sessions={activeSessions}
                   isLoading={loadingActiveSessions}
                   isUserInSession={isUserInSession}
+                  currentUserId={user?.id}
+                  onEndSession={handleEndSession}
+                  endingSessionId={endSessionMutation.variables}
                 />
               </div>
             </div>
@@ -122,6 +147,8 @@ function DashboardPage() {
               <RecentSessions
                 sessions={recentSessions}
                 isLoading={loadingRecentSessions}
+                onDeleteSession={handleDeleteSession}
+                deletingSessionId={deleteSessionMutation.variables}
               />
             </div>
           </div>

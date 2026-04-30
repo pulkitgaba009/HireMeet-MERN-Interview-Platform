@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from "react-router";
 import { useEffect, useRef } from "react";
-import { useSessionById, useJoinSession } from "../hooks/useSessions";
+import { useEndSession, useSessionById, useJoinSession } from "../hooks/useSessions";
 import { useUser } from "@clerk/clerk-react";
-import { Loader2Icon } from "lucide-react";
+import { CircleStopIcon, Loader2Icon } from "lucide-react";
 import { StreamCall, StreamVideo } from "@stream-io/video-react-sdk";
 import VideoCallUI from "../components/VideoCallUI";
 import useStreamClient from "../hooks/useStreamClient";
@@ -13,6 +13,7 @@ function SessionPage() {
   const { user } = useUser();
   const { data: sessionData, isLoading: sessionLoading } = useSessionById(id);
   const joinSessionMutation = useJoinSession(id);
+  const endSessionMutation = useEndSession(id);
   const {
     mutate: joinSession,
     isPending: isJoiningMutation,
@@ -62,6 +63,17 @@ function SessionPage() {
     !isFullForCurrentUser &&
     !hasJoinError &&
     (isJoiningMutation || hasJoinedSession);
+
+  const handleEndSession = () => {
+    const confirmed = window.confirm(
+      "End this session and move it to past sessions?",
+    );
+    if (!confirmed) return;
+
+    endSessionMutation.mutate(undefined, {
+      onSuccess: () => navigate("/dashboard"),
+    });
+  };
 
   const {
     streamClient,
@@ -135,12 +147,29 @@ function SessionPage() {
                 Difficulty: {session.difficulty}
               </p>
             </div>
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="btn btn-sm btn-ghost"
-            >
-              Leave Session
-            </button>
+            <div className="flex items-center gap-2">
+              {isHost && (
+                <button
+                  type="button"
+                  onClick={handleEndSession}
+                  className="btn btn-sm btn-error gap-2"
+                  disabled={endSessionMutation.isPending}
+                >
+                  {endSessionMutation.isPending ? (
+                    <Loader2Icon className="size-4 animate-spin" />
+                  ) : (
+                    <CircleStopIcon className="size-4" />
+                  )}
+                  End
+                </button>
+              )}
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="btn btn-sm btn-ghost"
+              >
+                Leave Session
+              </button>
+            </div>
           </div>
 
           {/* Video and Chat */}

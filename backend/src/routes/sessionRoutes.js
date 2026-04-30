@@ -1,5 +1,5 @@
 import { protectRoute } from "../middleware/protectRoute.js";
-import { createSession,getActiveSession,getMyRecentSessions,getSessionById,joinSession,endSession,getStreamToken } from "../controller/sessionController.js";
+import { createSession,getActiveSession,getMyRecentSessions,getSessionById,joinSession,endSession,deleteSession,getStreamToken } from "../controller/sessionController.js";
 import express from "express";
 import Session from "../models/SessionModel.js";
 
@@ -28,5 +28,7 @@ router.get("/:id",protectRoute,getSessionById);
 router.post("/:id/join",protectRoute,joinSession);
 
 router.post("/:id/end",protectRoute,endSession);
+
+router.delete("/:id",protectRoute,deleteSession);
 
 export default router;

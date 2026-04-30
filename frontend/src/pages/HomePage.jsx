@@ -26,7 +26,7 @@ function HomePage() {
             </div>
             <div>
               <p className="text-xl font-black tracking-wide text-primary font-mono">
-                Infosys
+                Hire-Meet
               </p>
               <p className="text-xs opacity-60 -mt-1">
                 Code Together - Get Hired
