@@ -10,7 +10,7 @@ if (!apiKey || !apiSecret) {
 }
 
 export const chatClient = StreamChat.getInstance(apiKey, apiSecret);
-export const streamClient = new StreamClient(apiKey,apiSecret);
+export const streamClient = new StreamClient(apiKey, apiSecret);
 
 export const upsertStreamUser = async (userData) => {
   try {
@@ -29,5 +29,30 @@ export const deleteStreamUser = async (userId) => {
     console.log("Stream user deleted successfully", userId);
   } catch (error) {
     console.error("Error deleting Stream user:", error);
+  }
+};
+
+export const generateStreamToken = async (userId, userName) => {
+  try {
+    const token = chatClient.createToken(userId);
+    console.log("Stream token generated successfully for user:", userId);
+    return token;
+  } catch (error) {
+    console.error("Error generating Stream token:", error);
+    throw error;
+  }
+};
+
+export const generateVideoToken = async (userId, callId) => {
+  try {
+    const token = streamClient.generateCallToken({
+      user_id: userId,
+      call_cids: [`default:${callId}`],
+    });
+    console.log("Video token generated successfully for user:", userId);
+    return token;
+  } catch (error) {
+    console.error("Error generating Video token:", error);
+    throw error;
   }
 };

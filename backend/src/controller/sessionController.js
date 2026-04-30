@@ -1,5 +1,19 @@
-import { chatClient, streamClient } from "../config/stream.js";
+import {
+  chatClient,
+  streamClient,
+  upsertStreamUser,
+  generateStreamToken,
+  generateVideoToken,
+} from "../config/stream.js";
 import Session from "../models/SessionModel.js";
+
+const ensureStreamUser = async (user) => {
+  await upsertStreamUser({
+    id: user.clerkId,
+    name: user.name || "User",
+    image: user.profileImage || "",
+  });
+};
 
 /**
  * CREATE A NEW SESSION
@@ -22,6 +36,8 @@ const createSession = async (req, res) => {
         .status(400)
         .json({ message: "Problem and Difficulty are required" });
     }
+
+    await ensureStreamUser(req.user);
 
     // Generate unique session/call ID
     const callId = `session_${Date.now()}_${Math.random()
@@ -155,6 +171,8 @@ const joinSession = async (req, res) => {
         .json({ message: "Host cannot join their own session as participant" });
     }
 
+    await ensureStreamUser(req.user);
+
     // Assign participant
     session.participant = userId;
     await session.save();
@@ -218,6 +236,76 @@ const endSession = async (req, res) => {
   }
 };
 
+/**
+ * GENERATE STREAM TOKEN
+ * - Generate token for user to join Stream Chat/Video
+ */
+const getStreamToken = async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    console.log("=== getStreamToken called ===");
+    console.log("Request body:", req.body);
+    console.log("sessionId:", sessionId);
+    console.log("User:", req.user ? { _id: req.user._id, clerkId: req.user.clerkId } : "No user");
+
+    if (!sessionId) {
+      console.log("ERROR: sessionId is missing");
+      return res.status(400).json({ message: "sessionId is required" });
+    }
+
+    // Verify session exists
+    console.log("Looking for session with ID:", sessionId);
+    const session = await Session.findById(sessionId);
+    console.log("Session found:", session ? "YES" : "NO");
+    if (session) {
+      console.log("Session details:", { _id: session._id, callId: session.callId, status: session.status });
+    }
+
+    if (!session) {
+      console.log("ERROR: Session not found");
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    const clerkId = req.user.clerkId;
+    const callId = session.callId;
+    console.log("Generating tokens for clerkId:", clerkId, "callId:", callId);
+
+    await ensureStreamUser(req.user);
+
+    // Generate Stream Chat token (same as chatController)
+    let streamToken;
+    try {
+      streamToken = await generateStreamToken(clerkId);
+      console.log("✅ Chat token generated successfully");
+    } catch (tokenError) {
+      console.error("❌ Chat token generation failed:", tokenError);
+      return res.status(500).json({ message: "Failed to generate chat token" });
+    }
+
+    // Generate Stream Video token
+    let videoToken;
+    try {
+      videoToken = await generateVideoToken(clerkId, callId);
+      console.log("✅ Video token generated successfully");
+    } catch (videoError) {
+      console.error("❌ Video token generation failed:", videoError);
+      return res.status(500).json({ message: "Failed to generate video token" });
+    }
+
+    console.log("=== Tokens generated successfully ===");
+    res.status(200).json({
+      streamToken,
+      videoToken,
+      userId: clerkId,
+      apiKey: process.env.STREAM_API_KEY,
+    });
+  } catch (error) {
+    console.error("❌ Error in getStreamToken:", error);
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 export {
   createSession,
   getActiveSession,
@@ -225,4 +313,5 @@ export {
   getSessionById,
   joinSession,
   endSession,
+  getStreamToken,
 };

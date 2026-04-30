@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminPanel from "./pages/AdminPanel";
 import EditQuestion from "./pages/EditQuestion";
 import AddQuestion from "./pages/AddQuestion";
+import SessionPage from "./pages/SessionPage";
 
 function App() {
   const { isLoaded, isSignedIn } = useUser();
@@ -30,6 +31,11 @@ function App() {
         <Route
           path="/problems/:id"
           element={isSignedIn ? <ProblemPage /> : <Navigate to="/" />}
+        />
+
+        <Route
+          path="/session/:id"
+          element={isSignedIn ? <SessionPage /> : <Navigate to="/" />}
         />
 
         <Route
