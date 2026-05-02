@@ -132,7 +132,7 @@ const getMyRecentSessions = async (req, res) => {
     const userId = req.user._id;
 
     const sessions = await Session.find({
-      deletedFor: { $ne: userId },
+      deletedFor: { $not: { $in: [userId] } },
       status: "completed", // ✅ fixed typo
       $or: [{ host: userId }, { participant: userId }], // ✅ fixed typo syntax
     })
@@ -272,7 +272,8 @@ const deleteSession = async (req, res) => {
     const session = await Session.findById(id);
 
     if (!session) {
-      return res.status(404).json({ message: "Session Not Found" });
+      // Session already deleted, treat as success
+      return res.status(200).json({ message: "Session removed from your past sessions" });
     }
 
     if (!isSessionMember(session, userId)) {
@@ -288,7 +289,8 @@ const deleteSession = async (req, res) => {
     }
 
     const currentUserId = userId.toString();
-    const deletedForIds = (session.deletedFor || []).map((deletedUserId) =>
+    session.deletedFor = session.deletedFor || [];
+    const deletedForIds = session.deletedFor.map((deletedUserId) =>
       deletedUserId.toString(),
     );
 

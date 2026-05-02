@@ -36,12 +36,15 @@ const sessionSchema = new mongoose.Schema({
     default: null,
   },
 
-  deletedFor: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
+  deletedFor: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    default: [],
+  },
 
 },{timestamps:true});
 
