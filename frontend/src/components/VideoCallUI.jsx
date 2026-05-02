@@ -20,7 +20,15 @@ import {
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import "stream-chat-react/dist/css/index.css";
 
-function VideoCallUI({ chatClient, channel }) {
+function VideoCallUI({ chatClient, channel, surface = "default" }) {
+  const isDark = surface === "dark";
+  const bar = isDark
+    ? "bg-[#252526] border border-[#333] text-[#e0e0e0]"
+    : "bg-base-100 rounded-lg shadow";
+  const stage = isDark ? "bg-[#121212] border border-[#333]" : "bg-base-300 rounded-lg";
+  const controls = isDark
+    ? "bg-[#252526] border border-[#333]"
+    : "bg-base-100 rounded-lg shadow";
   const navigate = useNavigate();
   const call = useCall();
   const { useCallCallingState, useParticipantCount } = useCallStateHooks();
@@ -52,12 +60,12 @@ function VideoCallUI({ chatClient, channel }) {
   }
 
   return (
-    <div className="h-full flex gap-3 relative str-video">
-      <div className="flex-1 flex flex-col gap-3">
+    <div className="h-full flex gap-3 relative str-video min-h-0">
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
         {/* Participants count badge and Chat Toggle */}
-        <div className="flex items-center justify-between gap-2 bg-base-100 p-3 rounded-lg shadow">
+        <div className={`flex items-center justify-between gap-2 p-3 rounded-lg ${bar}`}>
           <div className="flex items-center gap-2">
-            <UsersIcon className="w-5 h-5 text-primary" />
+            <UsersIcon className={`w-5 h-5 ${isDark ? "text-success" : "text-primary"}`} />
             <span className="font-semibold">
               {participantCount} {participantCount === 1 ? "participant" : "participants"}
             </span>
@@ -74,11 +82,11 @@ function VideoCallUI({ chatClient, channel }) {
           )}
         </div>
 
-        <div className="flex-1 bg-base-300 rounded-lg overflow-hidden relative">
+        <div className={`flex-1 min-h-0 rounded-lg overflow-hidden relative ${stage}`}>
           <SpeakerLayout />
         </div>
 
-        <div className="bg-base-100 p-3 rounded-lg shadow flex justify-center gap-3">
+        <div className={`p-3 rounded-lg flex justify-center gap-3 ${controls}`}>
           <CallControls onLeave={handleLeaveCall} />
         </div>
       </div>

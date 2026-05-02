@@ -1,11 +1,19 @@
 import { useParams, useNavigate } from "react-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useEndSession, useSessionById, useJoinSession } from "../hooks/useSessions";
 import { useUser } from "@clerk/clerk-react";
-import { CircleStopIcon, Loader2Icon } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import { StreamCall, StreamVideo } from "@stream-io/video-react-sdk";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import toast from "react-hot-toast";
 import VideoCallUI from "../components/VideoCallUI";
+import SessionTopNav from "../components/SessionTopNav";
+import SessionProblemDetails from "../components/SessionProblemDetails";
+import CodeEditor from "../components/CodeEditor";
+import OutputPanel from "../components/OutputPanel";
 import useStreamClient from "../hooks/useStreamClient";
+import { PROBLEMS } from "../data/problems";
+import { executeCode } from "../lib/piston";
 
 function SessionPage() {
   const { id } = useParams();
@@ -28,6 +36,24 @@ function SessionPage() {
     !!session?.participant && !isHost && !isParticipant;
   const joinAttemptKeyRef = useRef(null);
   const joinAttemptKey = `${id}:${user?.id || ""}`;
+
+  const [viewMode, setViewMode] = useState("both");
+  const [selectedLanguage, setSelectedLanguage] = useState("javascript");
+  const [code, setCode] = useState("");
+  const [output, setOutput] = useState("");
+  const [isRunning, setIsRunning] = useState(false);
+
+  const problem = useMemo(
+    () =>
+      session?.problem
+        ? Object.values(PROBLEMS).find((p) => p.title === session.problem) ?? null
+        : null,
+    [session?.problem],
+  );
+
+  const participantCount = session
+    ? 1 + (session.participant ? 1 : 0)
+    : 0;
 
   useEffect(() => {
     const hasAttemptedCurrentSession =
@@ -75,6 +101,47 @@ function SessionPage() {
     });
   };
 
+  useEffect(() => {
+    if (problem) {
+      setCode(problem.starterCode[selectedLanguage] || "");
+      setOutput("");
+    } else {
+      setCode("");
+      setOutput("");
+    }
+  }, [problem, selectedLanguage]);
+
+  const handleLanguageChange = (e) => {
+    const newLang = e.target.value;
+    setSelectedLanguage(newLang);
+    if (problem) {
+      setCode(problem.starterCode[newLang] || "");
+    }
+    setOutput("");
+  };
+
+  const handleRunCode = async () => {
+    try {
+      setIsRunning(true);
+      setOutput("");
+
+      const result = await executeCode(selectedLanguage, code);
+
+      if (!result.success) {
+        toast.error(result.error || "Runtime error");
+        setOutput(result.output || "");
+        return;
+      }
+
+      setOutput(result.output || "");
+    } catch (error) {
+      console.error(error);
+      toast.error("Execution error.");
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
   const {
     streamClient,
     call,
@@ -88,9 +155,47 @@ function SessionPage() {
     isParticipant,
   );
 
+  const resizeHandleH = "w-1.5 bg-[#333] hover:bg-primary transition-colors cursor-col-resize";
+  const resizeHandleV = "h-1.5 bg-[#333] hover:bg-primary transition-colors cursor-row-resize";
+
+  const workspacePanels = (
+    <PanelGroup direction="vertical" className="h-full">
+      <Panel defaultSize={42} minSize={22}>
+        <SessionProblemDetails
+          problem={problem}
+          session={session}
+          isHost={isHost}
+          participantCount={participantCount}
+          onEndSession={handleEndSession}
+          endSessionPending={endSessionMutation.isPending}
+        />
+      </Panel>
+      <PanelResizeHandle className={resizeHandleV} />
+      <Panel defaultSize={58} minSize={28}>
+        <PanelGroup direction="vertical" className="h-full">
+          <Panel defaultSize={72} minSize={35}>
+            <CodeEditor
+              selectedLanguage={selectedLanguage}
+              code={code}
+              isRunning={isRunning}
+              onLanguageChange={handleLanguageChange}
+              onCodeChange={setCode}
+              onRunCode={handleRunCode}
+              surface="dark"
+            />
+          </Panel>
+          <PanelResizeHandle className={resizeHandleV} />
+          <Panel defaultSize={28} minSize={18}>
+            <OutputPanel output={output} isRunning={isRunning} surface="dark" />
+          </Panel>
+        </PanelGroup>
+      </Panel>
+    </PanelGroup>
+  );
+
   if (sessionLoading || isJoiningSession || isInitializingCall) {
     return (
-      <div className="h-screen flex items-center justify-center bg-base-100">
+      <div className="h-screen flex items-center justify-center bg-[#121212] text-white">
         <div className="text-center">
           <Loader2Icon className="w-12 h-12 mx-auto animate-spin text-primary mb-4" />
           <p className="text-lg">
@@ -105,7 +210,7 @@ function SessionPage() {
 
   if (isFullForCurrentUser) {
     return (
-      <div className="h-screen flex items-center justify-center bg-base-100">
+      <div className="h-screen flex items-center justify-center bg-[#121212] text-white">
         <div className="text-center">
           <p className="text-lg text-error mb-4">This session is already full</p>
           <button
@@ -121,7 +226,7 @@ function SessionPage() {
 
   if (!session || !call) {
     return (
-      <div className="h-screen flex items-center justify-center bg-base-100">
+      <div className="h-screen flex items-center justify-center bg-[#121212] text-white">
         <div className="text-center">
           <p className="text-lg text-error mb-4">Failed to load session</p>
           <button
@@ -138,43 +243,45 @@ function SessionPage() {
   return (
     <StreamVideo client={streamClient}>
       <StreamCall call={call}>
-        <div className="h-screen w-screen bg-base-100 flex flex-col">
-          {/* Header */}
-          <div className="bg-base-200 border-b border-base-300 p-4 flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold">{session.problem}</h1>
-              <p className="text-sm text-base-content/60">
-                Difficulty: {session.difficulty}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {isHost && (
-                <button
-                  type="button"
-                  onClick={handleEndSession}
-                  className="btn btn-sm btn-error gap-2"
-                  disabled={endSessionMutation.isPending}
-                >
-                  {endSessionMutation.isPending ? (
-                    <Loader2Icon className="size-4 animate-spin" />
-                  ) : (
-                    <CircleStopIcon className="size-4" />
-                  )}
-                  End
-                </button>
-              )}
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="btn btn-sm btn-ghost"
-              >
-                Leave Session
-              </button>
-            </div>
-          </div>
+        <div className="h-screen w-screen bg-[#121212] flex flex-col text-[#e0e0e0] overflow-hidden">
+          <SessionTopNav viewMode={viewMode} onViewModeChange={setViewMode} />
 
-          {/* Video and Chat */}
-          <div className="flex-1 overflow-hidden">
-            <VideoCallUI chatClient={chatClient} channel={channel} />
+          <div className="flex-1 min-h-0 p-3 pt-2">
+            {viewMode === "canvas" && (
+              <div className="h-full rounded-lg overflow-hidden border border-[#2d2d2d] bg-[#1e1e1e] p-2">
+                <VideoCallUI
+                  chatClient={chatClient}
+                  channel={channel}
+                  surface="dark"
+                />
+              </div>
+            )}
+
+            {viewMode === "document" && (
+              <div className="h-full rounded-lg overflow-hidden border border-[#2d2d2d]">
+                {workspacePanels}
+              </div>
+            )}
+
+            {viewMode === "both" && (
+              <PanelGroup direction="horizontal" className="h-full">
+                <Panel defaultSize={58} minSize={32}>
+                  <div className="h-full rounded-lg overflow-hidden border border-[#2d2d2d] mr-1">
+                    {workspacePanels}
+                  </div>
+                </Panel>
+                <PanelResizeHandle className={resizeHandleH} />
+                <Panel defaultSize={42} minSize={28}>
+                  <div className="h-full rounded-lg overflow-hidden border border-[#2d2d2d] bg-[#1e1e1e] p-2 ml-1">
+                    <VideoCallUI
+                      chatClient={chatClient}
+                      channel={channel}
+                      surface="dark"
+                    />
+                  </div>
+                </Panel>
+              </PanelGroup>
+            )}
           </div>
         </div>
       </StreamCall>
