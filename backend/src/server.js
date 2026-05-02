@@ -16,9 +16,24 @@ const app = express();
 const __dirname = path.resolve();
 
 app.use(express.json());
+
+const allowedOrigins = [
+  // local dev
+  "http://localhost:5173",
+  // production frontend (Render)
+  "https://hiremeet-mern-interview-platform.onrender.com",
+  // optional custom client url
+  ENV.CLIENT_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: ENV.CLIENT_URL || "https://hiremeet-mern-interview-platform.onrender.com",
+    origin(origin, callback) {
+      // Allow non-browser requests (no Origin header)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
   }),
 );

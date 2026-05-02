@@ -1,4 +1,6 @@
-const PISTON_API = "http://localhost:3000/api";
+// In production the frontend is served by the backend, so use same-origin `/api`.
+// In dev you can override with VITE_API_URL (e.g. http://localhost:3000/api).
+const PISTON_API = import.meta.env.VITE_API_URL || "/api";
 
 const LANGUAGE_VERSIONS = {
   javascript: { language: "javascript", version: "18.15.0" },
