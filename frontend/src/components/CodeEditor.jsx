@@ -9,20 +9,10 @@ function CodeEditor({
   onLanguageChange,
   onCodeChange,
   onRunCode,
-  surface = "default",
 }) {
-  const isDark = surface === "dark";
-  const shell = isDark
-    ? "bg-[#1e1e1e] border-[#3c3c3c] text-[#e0e0e0]"
-    : "bg-base-100 border-base-300";
-  const outer = isDark ? "bg-[#1e1e1e]" : "bg-base-300";
-  const selectCls = isDark
-    ? "select select-sm select-bordered border-[#555] bg-[#2d2d2d] text-white"
-    : "select select-sm";
-
   return (
-    <div className={`h-full flex flex-col ${outer}`}>
-      <div className={`flex items-center justify-between px-4 py-3 border-b rounded-none ${shell}`}>
+    <div className="h-full bg-base-300 flex flex-col">
+      <div className="flex items-center justify-between px-4 py-3 bg-base-100 border-b border-base-300">
         <div className="flex items-center gap-3">
           <img
             src={LANGUAGE_CONFIG[selectedLanguage].icon}
@@ -30,7 +20,7 @@ function CodeEditor({
             className="size-6 object-contain"
           />
           <select
-            className={selectCls}
+            className="select select-sm select-bordered border-base-300 bg-base-100"
             value={selectedLanguage}
             onChange={onLanguageChange}
           >
@@ -61,7 +51,7 @@ function CodeEditor({
         </button>
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 min-h-0">
         <Editor
           height="100%"
           language={LANGUAGE_CONFIG[selectedLanguage].monacoLang}

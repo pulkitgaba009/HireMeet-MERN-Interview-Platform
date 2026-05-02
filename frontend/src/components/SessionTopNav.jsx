@@ -25,7 +25,7 @@ function SessionTopNav({ viewMode, onViewModeChange }) {
       className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
         viewMode === id
           ? "bg-primary text-primary-content"
-          : "text-[#aaa] hover:text-white hover:bg-white/5"
+          : "text-base-content/70 hover:text-base-content hover:bg-base-200"
       }`}
     >
       {label}
@@ -33,19 +33,23 @@ function SessionTopNav({ viewMode, onViewModeChange }) {
   );
 
   return (
-    <header className="shrink-0 border-b border-[#2d2d2d] bg-[#1a1a1a] px-4 py-3">
-      <div className="flex items-center justify-between gap-4">
-        <Link to="/dashboard" className="flex items-center gap-3 shrink-0">
-          <div className="size-9 rounded-lg bg-primary flex items-center justify-center">
+    <header className="shrink-0 bg-black border-b border-primary/20 shadow-lg">
+      <div className="max-w-[100vw] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+        <Link to="/dashboard" className="flex items-center gap-3 shrink-0 group">
+          <div className="size-9 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center shadow-lg group-hover:scale-105 transition">
             <BriefcaseBusiness className="size-5 text-primary-content" />
           </div>
           <div>
-            <p className="text-base font-bold text-white leading-tight">Hire-Meet</p>
-            <p className="text-[10px] text-[#888] leading-tight">Code Together</p>
+            <p className="text-base font-black tracking-wide text-primary font-mono leading-tight">
+              Hire-Meet
+            </p>
+            <p className="text-xs opacity-60 -mt-0.5">
+              Code Together · Get Hired
+            </p>
           </div>
         </Link>
 
-        <div className="flex flex-wrap items-center justify-center gap-1 rounded-lg bg-[#252525] p-1 max-w-full">
+        <div className="flex flex-wrap items-center justify-center gap-1 rounded-lg bg-base-200/40 p-1 max-w-full border border-base-300/30">
           {tab("document", "Document")}
           {tab("both", "Both")}
           {tab("canvas", "Canvas")}
@@ -55,32 +59,32 @@ function SessionTopNav({ viewMode, onViewModeChange }) {
           <NavLink
             to="/problems"
             className={({ isActive }) =>
-              `hidden md:inline-flex px-3 py-2 rounded-lg text-sm ${
-                isActive ? "bg-primary text-primary-content" : "text-[#ccc] hover:bg-white/5"
+              `hidden md:inline-flex px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 items-center gap-2 ${
+                isActive
+                  ? "bg-primary text-primary-content shadow-md"
+                  : "hover:bg-base-200 text-base-content/70"
               }`
             }
           >
-            <span className="flex items-center gap-2">
-              <CircleQuestionMarkIcon className="size-4" />
-              Problems
-            </span>
+            <CircleQuestionMarkIcon className="size-4" />
+            Problems
           </NavLink>
           <NavLink
             to="/dashboard"
             className={({ isActive }) =>
-              `hidden md:inline-flex px-3 py-2 rounded-lg text-sm ${
-                isActive ? "bg-primary text-primary-content" : "text-[#ccc] hover:bg-white/5"
+              `hidden md:inline-flex px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 items-center gap-2 ${
+                isActive
+                  ? "bg-primary text-primary-content shadow-md"
+                  : "hover:bg-base-200 text-base-content/70"
               }`
             }
           >
-            <span className="flex items-center gap-2">
-              <LayoutDashboard className="size-4" />
-              Dashboard
-            </span>
+            <LayoutDashboard className="size-4" />
+            Dashboard
           </NavLink>
           <UserButton
             appearance={{
-              elements: { avatarBox: "size-9 ring-2 ring-[#333]" },
+              elements: { avatarBox: "size-9 ring-2 ring-primary/30" },
             }}
           />
           <button

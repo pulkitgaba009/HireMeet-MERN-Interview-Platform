@@ -9,7 +9,7 @@ import {
   useMyRecentSessions,
 } from "../hooks/useSessions";
 
-import Navbar from "../components/Navbar";
+import NavBar from "../components/NavBar";
 import WelcomeSection from "../components/WelcomeSection";
 import StatsCards from "../components/StatsCards";
 import ActiveSessions from "../components/ActiveSessions";
@@ -85,7 +85,7 @@ function DashboardPage() {
   return (
     <>
       <div className="min-h-screen bg-black text-base-content">
-        <Navbar />
+        <NavBar />
 
         <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
 

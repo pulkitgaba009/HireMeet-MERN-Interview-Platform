@@ -155,8 +155,10 @@ function SessionPage() {
     isParticipant,
   );
 
-  const resizeHandleH = "w-1.5 bg-[#333] hover:bg-primary transition-colors cursor-col-resize";
-  const resizeHandleV = "h-1.5 bg-[#333] hover:bg-primary transition-colors cursor-row-resize";
+  const resizeHandleH =
+    "w-1.5 bg-base-300 hover:bg-primary transition-colors cursor-col-resize";
+  const resizeHandleV =
+    "h-1.5 bg-base-300 hover:bg-primary transition-colors cursor-row-resize";
 
   const workspacePanels = (
     <PanelGroup direction="vertical" className="h-full">
@@ -181,12 +183,11 @@ function SessionPage() {
               onLanguageChange={handleLanguageChange}
               onCodeChange={setCode}
               onRunCode={handleRunCode}
-              surface="dark"
             />
           </Panel>
           <PanelResizeHandle className={resizeHandleV} />
           <Panel defaultSize={28} minSize={18}>
-            <OutputPanel output={output} isRunning={isRunning} surface="dark" />
+            <OutputPanel output={output} isRunning={isRunning} />
           </Panel>
         </PanelGroup>
       </Panel>
@@ -195,7 +196,7 @@ function SessionPage() {
 
   if (sessionLoading || isJoiningSession || isInitializingCall) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#121212] text-white">
+      <div className="h-screen flex items-center justify-center bg-base-100 text-base-content">
         <div className="text-center">
           <Loader2Icon className="w-12 h-12 mx-auto animate-spin text-primary mb-4" />
           <p className="text-lg">
@@ -210,7 +211,7 @@ function SessionPage() {
 
   if (isFullForCurrentUser) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#121212] text-white">
+      <div className="h-screen flex items-center justify-center bg-base-100 text-base-content">
         <div className="text-center">
           <p className="text-lg text-error mb-4">This session is already full</p>
           <button
@@ -226,7 +227,7 @@ function SessionPage() {
 
   if (!session || !call) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#121212] text-white">
+      <div className="h-screen flex items-center justify-center bg-base-100 text-base-content">
         <div className="text-center">
           <p className="text-lg text-error mb-4">Failed to load session</p>
           <button
@@ -243,22 +244,18 @@ function SessionPage() {
   return (
     <StreamVideo client={streamClient}>
       <StreamCall call={call}>
-        <div className="h-screen w-screen bg-[#121212] flex flex-col text-[#e0e0e0] overflow-hidden">
+        <div className="h-screen w-screen bg-base-100 flex flex-col text-base-content overflow-hidden">
           <SessionTopNav viewMode={viewMode} onViewModeChange={setViewMode} />
 
           <div className="flex-1 min-h-0 p-3 pt-2">
             {viewMode === "canvas" && (
-              <div className="h-full rounded-lg overflow-hidden border border-[#2d2d2d] bg-[#1e1e1e] p-2">
-                <VideoCallUI
-                  chatClient={chatClient}
-                  channel={channel}
-                  surface="dark"
-                />
+              <div className="h-full rounded-lg overflow-hidden border border-base-300 bg-base-200 p-2">
+                <VideoCallUI chatClient={chatClient} channel={channel} />
               </div>
             )}
 
             {viewMode === "document" && (
-              <div className="h-full rounded-lg overflow-hidden border border-[#2d2d2d]">
+              <div className="h-full rounded-lg overflow-hidden border border-base-300 shadow-sm">
                 {workspacePanels}
               </div>
             )}
@@ -266,18 +263,14 @@ function SessionPage() {
             {viewMode === "both" && (
               <PanelGroup direction="horizontal" className="h-full">
                 <Panel defaultSize={58} minSize={32}>
-                  <div className="h-full rounded-lg overflow-hidden border border-[#2d2d2d] mr-1">
+                  <div className="h-full rounded-lg overflow-hidden border border-base-300 shadow-sm mr-1">
                     {workspacePanels}
                   </div>
                 </Panel>
                 <PanelResizeHandle className={resizeHandleH} />
                 <Panel defaultSize={42} minSize={28}>
-                  <div className="h-full rounded-lg overflow-hidden border border-[#2d2d2d] bg-[#1e1e1e] p-2 ml-1">
-                    <VideoCallUI
-                      chatClient={chatClient}
-                      channel={channel}
-                      surface="dark"
-                    />
+                  <div className="h-full rounded-lg overflow-hidden border border-base-300 bg-base-200 p-2 ml-1 shadow-sm">
+                    <VideoCallUI chatClient={chatClient} channel={channel} />
                   </div>
                 </Panel>
               </PanelGroup>
