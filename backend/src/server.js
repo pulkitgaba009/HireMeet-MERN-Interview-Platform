@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import { fileURLToPath } from "url";
 import chatRoutes from "./routes/chatRoute.js";
 import { ENV } from "./lib/env.js";
 import connectDB from "./config/db.js";
@@ -13,7 +14,8 @@ import authRoute  from "./routes/authRoute.js";
 import questionsRoute from "./routes/questionRoute.js"
 
 const app = express();
-const __dirname = path.resolve();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Render / other reverse proxies terminate TLS; Clerk needs correct proto/host for auth.
 app.set("trust proxy", 1);
@@ -81,7 +83,8 @@ app.post("/api/execute", async (req, res) => {
 });
 
 if (ENV.NODE_ENV === "production") {
-  const frontendPath = path.join(__dirname, "..", "frontend", "dist");
+  // `server.js` lives in `backend/src`, so go up to repo root then into `frontend/dist`.
+  const frontendPath = path.join(__dirname, "..", "..", "frontend", "dist");
 
   app.use(express.static(frontendPath));
 
