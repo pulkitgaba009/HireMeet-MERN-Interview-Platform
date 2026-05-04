@@ -11,6 +11,7 @@ import SessionTopNav from "../components/SessionTopNav";
 import SessionProblemDetails from "../components/SessionProblemDetails";
 import CodeEditor from "../components/CodeEditor";
 import OutputPanel from "../components/OutputPanel";
+import SecureQuiz from "../components/SecureQuiz";
 import useStreamClient from "../hooks/useStreamClient";
 import { PROBLEMS } from "../data/problems";
 import { executeCode } from "../lib/piston";
@@ -142,6 +143,10 @@ function SessionPage() {
     }
   };
 
+  const handleFullscreenExit = () => {
+    toast.error("User tried to exit full screen view");
+  };
+
   const {
     streamClient,
     call,
@@ -245,6 +250,7 @@ function SessionPage() {
     <StreamVideo client={streamClient}>
       <StreamCall call={call}>
         <div className="h-screen w-screen bg-base-100 flex flex-col text-base-content overflow-hidden">
+          <SecureQuiz onFullscreenExit={handleFullscreenExit} />
           <SessionTopNav viewMode={viewMode} onViewModeChange={setViewMode} />
 
           <div className="flex-1 min-h-0 p-3 pt-2">

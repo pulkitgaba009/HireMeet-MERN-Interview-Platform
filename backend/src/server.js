@@ -15,6 +15,9 @@ import questionsRoute from "./routes/questionRoute.js"
 const app = express();
 const __dirname = path.resolve();
 
+// Render / other reverse proxies terminate TLS; Clerk needs correct proto/host for auth.
+app.set("trust proxy", 1);
+
 app.use(express.json());
 
 const allowedOrigins = [
@@ -37,7 +40,21 @@ app.use(
     credentials: true,
   }),
 );
-app.use(clerkMiddleware());
+
+if (ENV.NODE_ENV === "production") {
+  if (!ENV.CLERK_SECRET_KEY || !ENV.CLERK_PUBLISHABLE_KEY) {
+    console.error(
+      "Clerk: CLERK_SECRET_KEY and CLERK_PUBLISHABLE_KEY must be set in production or API auth will return 401.",
+    );
+  }
+}
+
+app.use(
+  clerkMiddleware({
+    secretKey: ENV.CLERK_SECRET_KEY,
+    publishableKey: ENV.CLERK_PUBLISHABLE_KEY,
+  }),
+);
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.use("/api/auth", authRoute);

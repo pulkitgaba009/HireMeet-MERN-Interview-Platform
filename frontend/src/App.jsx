@@ -11,6 +11,7 @@ import AdminPanel from "./pages/AdminPanel";
 import EditQuestion from "./pages/EditQuestion";
 import AddQuestion from "./pages/AddQuestion";
 import SessionPage from "./pages/SessionPage";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const { isLoaded, isSignedIn } = useUser();
@@ -49,6 +50,7 @@ function App() {
           <Route path="add-question" element={<AddQuestion />} />
           <Route path="edit-question" element={<EditQuestion />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       <Toaster />

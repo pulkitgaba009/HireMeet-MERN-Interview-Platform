@@ -1,8 +1,12 @@
 import axios from "axios";
 
+const trimmedApi = import.meta.env.VITE_API_URL?.replace(/\/+$/, "") ?? "";
+const baseURL = trimmedApi.length > 0 ? trimmedApi : "/api";
+
 const axiosInstance = axios.create({
   // Use relative API in production (same-origin) unless explicitly overridden.
-  baseURL: import.meta.env.VITE_API_URL || "/api",
+  // Avoid trailing slash on VITE_API_URL or requests become /api//sessions.
+  baseURL,
   withCredentials: true,
 });
 
